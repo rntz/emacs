@@ -2980,8 +2980,8 @@ x_draw_box_rect (struct glyph_string *s,
 		    left_x, top_y, vwidth, bottom_y - top_y + 1);
 
   /* Bottom.  */
-  x_fill_rectangle (s->f, s->gc,
-		  left_x, bottom_y - hwidth + 1, right_x - left_x + 1, hwidth);
+  /* x_fill_rectangle (s->f, s->gc, */
+  /* 		    left_x, bottom_y - hwidth + 1, right_x - left_x + 1, hwidth); */
 
   /* Right.  */
   if (right_p)

@@ -799,7 +799,7 @@ x_reset_clip_rectangles (struct frame *f, GC gc)
 
 
 static void
-x_fill_circle (struct frame *f, GC gc, int x, int y, int width, int height)
+x_fill_circle (struct frame *f, GC gc, int x, int y, int width)
 {
 #ifdef USE_CAIRO
   Display *dpy = FRAME_X_DISPLAY (f);
@@ -814,7 +814,9 @@ x_fill_circle (struct frame *f, GC gc, int x, int y, int width, int height)
 
   // radius configurable, y configurable as distance from top? or percentage of
   // glyph height? space between char and hat?
-  cairo_arc(cr, x + (width / 2), y, 2.8, 0, 2.0 * M_PI);
+  // nb. 2.8 = radius. hm!
+  double radius = (double)width / 5;
+  cairo_arc(cr, x + ((double)width / 2), y, radius, 0, 2.0 * M_PI);
   cairo_fill (cr);
 
   x_end_cr_clip (f);
@@ -2980,8 +2982,8 @@ x_draw_box_rect (struct glyph_string *s,
 		    left_x, top_y, vwidth, bottom_y - top_y + 1);
 
   /* Bottom.  */
-  /* x_fill_rectangle (s->f, s->gc, */
-  /* 		    left_x, bottom_y - hwidth + 1, right_x - left_x + 1, hwidth); */
+  x_fill_rectangle (s->f, s->gc,
+		    left_x, bottom_y - hwidth + 1, right_x - left_x + 1, hwidth);
 
   /* Right.  */
   if (right_p)
@@ -3972,15 +3974,14 @@ x_draw_glyph_string (struct glyph_string *s)
       if (s->face->cursorless_p)
         {
           int glyph_y = s->ybase - s->first_glyph->ascent;
-          int glyph_height
-            = s->first_glyph->ascent + s->first_glyph->descent;
-          unsigned long h = 1;
-          unsigned long dy = (glyph_height - h) * 0.15;
+	  // why minus 1?
+          /* int glyph_height = s->first_glyph->ascent + s->first_glyph->descent;
+           * unsigned long dy = (glyph_height - 1) * 0.15; */
+	  int width = s->first_glyph->pixel_width;
 
           if (s->face->cursorless_color_defaulted_p)
             {
-              x_fill_circle (s->f, s->gc, s->x, s->y,
-                             s->width, h);
+              x_fill_circle (s->f, s->gc, s->x, s->y, width);
             }
           else
             {
@@ -3990,8 +3991,7 @@ x_draw_glyph_string (struct glyph_string *s)
 
               XSetForeground (display, s->gc,
                               s->face->cursorless_color);
-              x_fill_circle (s->f, s->gc, s->x, glyph_y + dy,
-                             s->width, h);
+              x_fill_circle (s->f, s->gc, s->x, glyph_y, width);
               XSetForeground (display, s->gc, xgcv.foreground);
             }
         }

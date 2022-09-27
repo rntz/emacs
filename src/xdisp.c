@@ -30574,9 +30574,9 @@ gui_produce_glyphs (struct it *it)
  	      it->descent = FONT_DESCENT (font) - boff;
  	    }
 
-	  // add extra ascent for characters
-	  // TODO: limit this to only cursorless characters
-	  it->ascent += 6;
+	  /* // add extra ascent for characters
+	   * // TODO: limit this to only cursorless characters
+	   * it->ascent += 6; */
 
 	  if (get_char_glyph_code (it->char_to_display, font, &char2b))
 	    {
@@ -31242,7 +31242,12 @@ gui_produce_glyphs (struct it *it)
 
   if (extra_line_spacing > 0)
     {
-      it->descent += extra_line_spacing;
+      /* it->descent += extra_line_spacing; */
+      /* double ratio = (double)it->ascent / (double)(it->ascent + it->descent);
+       * int above = round(extra_line_spacing * ratio);
+       * it->ascent += above;
+       * it->descent += extra_line_spacing - above; */
+      it->ascent += extra_line_spacing;
       if (extra_line_spacing > it->max_extra_line_spacing)
 	it->max_extra_line_spacing = extra_line_spacing;
     }

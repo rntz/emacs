@@ -814,7 +814,6 @@ x_fill_circle (struct frame *f, GC gc, int x, int y, int width)
 
   // radius configurable, y configurable as distance from top? or percentage of
   // glyph height? space between char and hat?
-  // nb. 2.8 = radius. hm!
   double radius = (double)width / 5;
   cairo_arc(cr, x + ((double)width / 2), y, radius, 0, 2.0 * M_PI);
   cairo_fill (cr);
